@@ -3,6 +3,7 @@
 A simple localization framework that can re-localize in built maps based on [FAST-LIO] and works with ROS Noetic(https://github.com/hku-mars/FAST_LIO). 
 
 ## News
+~~- **2023:** Add **Open3D 0.13** support. (By Jason Kim)
 
 ~~- **2021-08-11:** Add **Open3D 0.7** support.
   
