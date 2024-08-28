@@ -68,8 +68,8 @@ Clone the repository and catkin_make:
 
 ```
     cd ~/$A_ROS_DIR$/src
-    git clone https://github.com/HViktorTsoi/FAST_LIO_LOCALIZATION.git
-    cd FAST_LIO_LOCALIZATION
+    git clone https://github.com/U-AMC/POINT_LIO_LOCALIZATION
+    cd POINT_LIO_LOCALIZATION
     git submodule update --init
     cd ../..
     catkin_make
@@ -88,7 +88,7 @@ Demo rosbag in a large underground garage:
 
 Corresponding map: [Google Drive](https://drive.google.com/file/d/1X_mhPlSCNj-1erp_DStCQZfkY7l4w7j8/view?usp=sharing) | [Baidu Pan (Code: kw6f)](https://pan.baidu.com/s/1Yw4vY3kEK8x2g-AsBi6VCw)
 
-The map can be built using LIO-SAM or FAST-LIO-SLAM.
+The map can be built using LIO-SAM or FAST-LIO-SLAM. 
 
 ### 4.2 Run
 
