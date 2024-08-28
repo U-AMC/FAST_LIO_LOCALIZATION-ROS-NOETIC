@@ -1,8 +1,10 @@
-# FAST-LIO-LOCALIZATION
+# POINT-LIO-LOCALIZATION
 
-A simple localization framework that can re-localize in built maps based on [FAST-LIO] and works with ROS Noetic(https://github.com/hku-mars/FAST_LIO). 
+A simple localization framework that can re-localize in built maps based on [POINT-LIO] and works with ROS Noetic(https://github.com/hku-mars/POINT_LIO). 
 
 ## News
+~~- **2024:** FAST-LIO altered with **POINT-LIO**, now running extensively robust to drift (By Jason Kim)
+
 ~~- **2023:** Add **Open3D 0.13** support. (By Jason Kim)
 
 ~~- **2021-08-11:** Add **Open3D 0.7** support.
@@ -30,11 +32,11 @@ A simple localization framework that can re-localize in built maps based on [FAS
 
 
 ## 2. Prerequisites
-### 2.1 Dependencies for FAST-LIO
+### 2.1 Dependencies for POINT-LIO
 
-Technically, if you have built and run FAST-LIO before, you may skip section 2.1.
+Technically, if you have built and run POINT-LIO before, you may skip section 2.1.
 
-This part of dependency is consistent with FAST-LIO, please refer to the documentation https://github.com/hku-mars/FAST_LIO#1-prerequisites
+This part of dependency is consistent with POINT-LIO, please refer to the documentation https://github.com/hku-mars/FAST_LIO#1-prerequisites
 
 ### 2.2 Dependencies for localization module
 
@@ -130,17 +132,17 @@ Note that, during the initialization stage, it's better to keep the robot still.
 
 
 ## Related Works
-1. [FAST-LIO](https://github.com/hku-mars/FAST_LIO): A computationally efficient and robust LiDAR-inertial odometry (LIO) package
+1. [POINT-LIO](https://github.com/hku-mars/POINT_LIO): A computationally efficient and robust LiDAR-inertial odometry (LIO) package
 2. [ikd-Tree](https://github.com/hku-mars/ikd-Tree): A state-of-art dynamic KD-Tree for 3D kNN search.
 3. [FAST-LIO-SLAM](https://github.com/gisbi-kim/FAST_LIO_SLAM): The integration of FAST-LIO with [Scan-Context](https://github.com/irapkaist/scancontext) **loop closure** module.
 4. [LIO-SAM_based_relocalization](https://github.com/Gaochao-hit/LIO-SAM_based_relocalization): A simple system that can relocalize a robot on a built map based on LIO-SAM.
 
 
 ## Acknowledgments
-Thanks for the authors of [FAST-LIO](https://github.com/hku-mars/FAST_LIO) and [LIO-SAM_based_relocalization](https://github.com/Gaochao-hit/LIO-SAM_based_relocalization).
+Thanks for the authors of [POINT-LIO](https://github.com/hku-mars/FAST_LIO) and [LIO-SAM_based_relocalization](https://github.com/Gaochao-hit/LIO-SAM_based_relocalization).
 
 ## TODO
 1. Go over the timestamp issue of the published odometry and tf;
 2. Using integrated points for global localization;
-3. Fuse global localization with the state estimation of FAST-LIO, and smooth the localization trajectory; 
+3. Fuse global localization with the state estimation of ~~FAST-LIO~~ POINT-LIO, and smooth the localization trajectory; 
 4. Updating...
