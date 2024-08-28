@@ -36,8 +36,8 @@ A simple localization framework that can re-localize in built maps based on [POI
 
 Technically, if you have built and run POINT-LIO before, you may skip section 2.1.
 
-This part of dependency is consistent with POINT-LIO, please refer to the documentation https://github.com/hku-mars/FAST_LIO#1-prerequisites
-
+This part of dependency is consistent with POINT-LIO, please refer to the documentation [https://github.com/hku-mars/FAST_LIO#1-prerequisites
+](https://github.com/hku-mars/Point-LIO?tab=readme-ov-file#3-prerequisites)
 ### 2.2 Dependencies for localization module
 
 - ~~python 2.7~~ python 3.8
