@@ -1,6 +1,6 @@
 # POINT-LIO-LOCALIZATION
 
-A simple localization framework that can re-localize in built maps based on [POINT-LIO] and works with ROS Noetic([https://github.com/hku-mars/POINT_LIO](https://github.com/hku-mars/Point-LIO)). 
+A simple localization framework that can re-localize in built maps based on [POINT-LIO](https://github.com/hku-mars/Point-LIO) and works with ROS Noetic. 
 
 ## News
 ~~- **2024:** FAST-LIO altered with **POINT-LIO**, now running extensively robust to drift (By Jason Kim)
