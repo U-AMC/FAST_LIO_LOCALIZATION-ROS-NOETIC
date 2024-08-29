@@ -131,7 +131,7 @@ Note that, during the initialization stage, it's better to keep the robot still.
 
 
 ## Related Works
-1. [POINT-LIO](https://github.com/hku-mars/POINT_LIO): A computationally efficient and robust LiDAR-inertial odometry (LIO) package
+1. [POINT-LIO](https://github.com/hku-mars/Point-LIO): A computationally efficient and robust LiDAR-inertial odometry (LIO) package
 2. [ikd-Tree](https://github.com/hku-mars/ikd-Tree): A state-of-art dynamic KD-Tree for 3D kNN search.
 3. [FAST-LIO-SLAM](https://github.com/gisbi-kim/FAST_LIO_SLAM): The integration of FAST-LIO with [Scan-Context](https://github.com/irapkaist/scancontext) **loop closure** module.
 4. [LIO-SAM_based_relocalization](https://github.com/Gaochao-hit/LIO-SAM_based_relocalization): A simple system that can relocalize a robot on a built map based on LIO-SAM.
