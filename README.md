@@ -16,7 +16,7 @@ A simple localization framework that can re-localize in built maps based on [POI
 
 ## 1. Features
 - Realtime 3D global localization in a pre-built point cloud map. 
-  By fusing low-frequency global localization (about 0.5~0.2Hz), and high-frequency odometry from FAST-LIO, the entire system is computationally efficient.
+  By fusing low-frequency global localization (about 0.5~0.2Hz), and high-frequency, drift-robust odometry from POINT-LIO, the entire system is computationally efficient.
 
 <div align="center"><img src="doc/demo.gif" width=90% /></div>
 
