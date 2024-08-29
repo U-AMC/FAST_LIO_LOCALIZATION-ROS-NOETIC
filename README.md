@@ -30,7 +30,7 @@ A simple localization framework that can re-localize in built maps based on [POI
 <!-- [![Watch the video](doc/real_exp_2.png)](https://youtu.be/2OvjGnxszf8) -->
 <div align="center">
 <img src="doc/demo_init.GIF" width=49.6% />
-<img src="doc/demo_init_2.GIF" width = 49.6% >
+<img src="doc/demo_init.GIF" width = 49.6% >
 </div>
 
 
