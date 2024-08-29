@@ -25,11 +25,12 @@ A simple localization framework that can re-localize in built maps based on [POI
 <div align="center"><img src="doc/demo_accu.GIF" width=90% /></div>
 
 - The initial localization can be provided either by rough manual estimation from RVIZ, or pose from another sensor/algorithm.
+- Using Small_GICP, the registration now accepts more tolerence in rough initial pose input, subsequently robust to unstructured and dynamic query input.
 
 <!-- ![image](doc/real_experiment2.gif) -->
 <!-- [![Watch the video](doc/real_exp_2.png)](https://youtu.be/2OvjGnxszf8) -->
 <div align="center">
-<img src="doc/demo_init.gif" width=49.6% />
+<img src="doc/demo_init.gif" width=90% />
 </div>
 
 
