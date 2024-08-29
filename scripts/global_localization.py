@@ -12,6 +12,9 @@ import ros_numpy
 from geometry_msgs.msg import PoseWithCovarianceStamped, Pose, Point, Quaternion
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import PointCloud2
+from scipy.spatial.transform import Rotation
+from pyridescence import *
+import small_gicp
 import numpy as np
 import tf
 import tf.transformations
@@ -22,13 +25,28 @@ T_map_to_odom = np.eye(4)
 cur_odom = None
 cur_scan = None
 
-
+class ScanToModelMatchingOdometry(object):
+  def __init__(self, num_threads):
+    self.num_threads = num_threads
+    self.T_last_current = np.identity(4)
+    self.T_world_lidar = np.identity(4)
+    self.target = None
+    # self.target = small_gicp.GaussianVoxelMap(1.0)
+    # self.target.set_lru(horizon=100, clear_cycle=10)
+  
+  def estimate(self, raw_points : np.ndarray , map_points : np.ndarray, initial):
+    # map_points, target_tree = small_gicp.preprocess_points(map_points)
+    # raw_points, source_tree = small_gicp.preprocess_points(raw_points)
+    if self.target is None:
+      self.target = map_points
+    result = small_gicp.align(raw_points, self.target, num_threads=self.num_threads, init_T_target_source=initial, registration_type='GICP')
+    return result
+  
 def pose_to_mat(pose_msg):
     return np.matmul(
         tf.listener.xyz_to_mat44(pose_msg.pose.pose.position),
         tf.listener.xyzw_to_mat44(pose_msg.pose.pose.orientation),
     )
-
 
 def msg_to_array(pc_msg):
     pc_array = ros_numpy.numpify(pc_msg)
@@ -39,16 +57,16 @@ def msg_to_array(pc_msg):
     return pc
 
 
-def registration_at_scale(pc_scan, pc_map, initial, scale):
-    result_icp = o3d.pipelines.registration.registration_icp(
-        voxel_down_sample(pc_scan, SCAN_VOXEL_SIZE * scale), voxel_down_sample(pc_map, MAP_VOXEL_SIZE * scale),
-        1.0 * scale, initial,
-        o3d.pipelines.registration.TransformationEstimationPointToPoint(),
-        o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=20)
-    )
-
-    return result_icp.transformation, result_icp.fitness
-
+def registration_at_scale(pc_scan, pc_map, initial, scale):    
+    pc_map = np.asarray(pc_map.points) #ndarray conversion
+    pc_scan = np.asarray(pc_scan.points) #ndarray conversion
+    odom = ScanToModelMatchingOdometry(8)
+    T = odom.estimate(pc_map, pc_scan, initial)
+    # print(T.T_target_source)
+    # print(T.error)
+    # print(result_icp.transformation, 'transformation result')
+    # print(result_icp.fitness, 'icp fitness score')
+    return T.T_target_source, T.error
 
 def inverse_se3(trans):
     trans_inverse = np.eye(4)
@@ -104,12 +122,12 @@ def crop_global_map_in_FOV(global_map, pose_estimation, cur_odom):
         )
     global_map_in_FOV = o3d.geometry.PointCloud()
     global_map_in_FOV.points = o3d.utility.Vector3dVector(np.squeeze(global_map_in_map[indices, :3]))
-
+    
     # 发布fov内点云
     header = cur_odom.header
     header.frame_id = 'map'
     publish_point_cloud(pub_submap, header, np.array(global_map_in_FOV.points)[::10])
-
+    
     return global_map_in_FOV
 
 
@@ -117,31 +135,22 @@ def global_localization(pose_estimation):
     global global_map, cur_scan, cur_odom, T_map_to_odom
     # 用icp配准
     # print(global_map, cur_scan, T_map_to_odom)
-    rospy.loginfo('Global localization by scan-to-map matching......')
+    #rospy.loginfo('Global localization by scan-to-map matching......')
 
     # TODO 这里注意线程安全
     scan_tobe_mapped = copy.copy(cur_scan)
 
-    tic = time.time()
-
     global_map_in_FOV = crop_global_map_in_FOV(global_map, pose_estimation, cur_odom)
 
-    # 粗配准
     transformation, _ = registration_at_scale(scan_tobe_mapped, global_map_in_FOV, initial=pose_estimation, scale=5)
 
-    # 精配准
-    transformation, fitness = registration_at_scale(scan_tobe_mapped, global_map_in_FOV, initial=transformation,
-                                                    scale=1)
-    toc = time.time()
-    rospy.loginfo('Time: {}'.format(toc - tic))
-    rospy.loginfo('')
+    transformation, fitness = registration_at_scale(scan_tobe_mapped, global_map_in_FOV, initial=transformation, scale=1)
 
-    # 当全局定位成功时才更新map2odom
     if fitness > LOCALIZATION_TH:
+    # if True:
         # T_map_to_odom = np.matmul(transformation, pose_estimation)
         T_map_to_odom = transformation
 
-        # 发布map_to_odom
         map_to_odom = Odometry()
         xyz = tf.transformations.translation_from_matrix(T_map_to_odom)
         quat = tf.transformations.quaternion_from_matrix(T_map_to_odom)
@@ -151,7 +160,7 @@ def global_localization(pose_estimation):
         pub_map_to_odom.publish(map_to_odom)
         return True
     else:
-        rospy.logwarn('Not match!!!!')
+        rospy.logwarn('Low match score, possible global drift')
         rospy.logwarn('{}'.format(transformation))
         rospy.logwarn('fitness score:{}'.format(fitness))
         return False
@@ -216,7 +225,7 @@ if __name__ == '__main__':
 
     # The threshold of global localization,
     # only those scan2map-matching with higher fitness than LOCALIZATION_TH will be taken
-    LOCALIZATION_TH = 0.8
+    LOCALIZATION_TH = 400 #small_gicp threshold
 
     # FOV(rad), modify this according to your LiDAR type
     FOV = 6.28319
@@ -224,7 +233,7 @@ if __name__ == '__main__':
     # The farthest distance(meters) within FOV
     FOV_FAR = 300
 
-    rospy.init_node('fast_lio_localization')
+    rospy.init_node('point_lio_localization')
     rospy.loginfo('Localization Node Inited...')
 
     # publisher
