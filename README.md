@@ -4,6 +4,7 @@ A simple localization framework that can re-localize in built maps based on [POI
 
 ## News
 ~~- **2024-08-28:** FAST-LIO altered with **POINT-LIO**, now running extensively robust to drift (By Jason Kim)
+
 ~~- **2024-08-29:** [small_gicp](https://github.com/koide3/small_gicp) by kenji koide implemented for robust, fast, threaded scan-to-map matching (By Jason Kim)
 
 ~~- **2023:** Add **Open3D 0.13** support. (By Jason Kim)
