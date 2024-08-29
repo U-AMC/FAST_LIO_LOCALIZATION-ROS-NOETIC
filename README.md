@@ -18,7 +18,7 @@ A simple localization framework that can re-localize in built maps based on [POI
 - Realtime 3D global localization in a pre-built point cloud map. 
   By fusing low-frequency global localization (about 0.5~0.2Hz), and high-frequency odometry from FAST-LIO, the entire system is computationally efficient.
 
-<div align="center"><img src="doc/demo.GIF" width=90% /></div>
+<div align="center"><img src="doc/demo.gif" width=90% /></div>
 
 - Eliminate the accumulative error of the odometry.
 
