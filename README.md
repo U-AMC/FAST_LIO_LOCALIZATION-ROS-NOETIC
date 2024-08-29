@@ -99,7 +99,7 @@ The map can be built using LIO-SAM or FAST-LIO-SLAM.
 2. Run localization, here we take Livox AVIA as an example:
 
 ```shell
-roslaunch fast_lio_localization localization_avia.launch map:=/path/to/your/map.pcd
+roslaunch point_lio_localization localization_avia.launch map:=/path/to/your/map.pcd
 ```
 
 Please modify `/path/to/your/map.pcd` to your own map point cloud file path.
@@ -121,7 +121,7 @@ Support for higher frequency is coming soon.
 
 4. Provide initial pose
 ```shell
-rosrun fast_lio_localization publish_initial_pose.py 14.5 -7.5 0 -0.25 0 0 
+rosrun point_lio_localization publish_initial_pose.py 14.5 -7.5 0 -0.25 0 0 
 ```
 The numerical value **14.5 -7.5 0 -0.25 0 0** denotes 6D pose **x y z yaw pitch roll** in map frame, 
 which is a rough initial guess for **localization_test_scene_1.bag**. 
