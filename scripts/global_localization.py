@@ -25,7 +25,7 @@ T_map_to_odom = np.eye(4)
 cur_odom = None
 cur_scan = None
 
-class ScanToModelMatchingOdometry(object):
+class ScantoMapMatchingLocalization(object):
   def __init__(self, num_threads):
     self.num_threads = num_threads
     self.T_last_current = np.identity(4)
@@ -35,11 +35,16 @@ class ScanToModelMatchingOdometry(object):
     # self.target.set_lru(horizon=100, clear_cycle=10)
   
   def estimate(self, raw_points : np.ndarray , map_points : np.ndarray, initial):
-    # map_points, target_tree = small_gicp.preprocess_points(map_points)
-    # raw_points, source_tree = small_gicp.preprocess_points(raw_points)
+    raw_points = small_gicp.PointCloud(raw_points)
+    # map_points = small_gicp.PointCloud(map_points)
+    # map_points, target_tree = small_gicp.preprocess_points(map_points, downsampling_resolution=0.8, num_threads=16)
+    # raw_points, source_tree = small_gicp.preprocess_points(raw_points, downsampling_resolution=0.1, num_threads=24)
     if self.target is None:
-      self.target = map_points
-    result = small_gicp.align(raw_points, self.target, num_threads=self.num_threads, init_T_target_source=initial, registration_type='GICP')
+        map_points = small_gicp.PointCloud(map_points)
+        map_points, target_tree = small_gicp.preprocess_points(map_points, downsampling_resolution=0.8, num_threads=24)
+        self.target = map_points
+    
+    result = small_gicp.align(raw_points, self.target, num_threads=24, init_T_target_source=initial, registration_type='GICP', max_correspondence_distance=3.0)
     return result
   
 def pose_to_mat(pose_msg):
@@ -60,7 +65,7 @@ def msg_to_array(pc_msg):
 def registration_at_scale(pc_scan, pc_map, initial, scale):    
     pc_map = np.asarray(pc_map.points) #ndarray conversion
     pc_scan = np.asarray(pc_scan.points) #ndarray conversion
-    odom = ScanToModelMatchingOdometry(8)
+    odom = ScantoMapMatchingLocalization(16) #num thread
     T = odom.estimate(pc_map, pc_scan, initial)
     # print(T.T_target_source)
     # print(T.error)
@@ -140,11 +145,11 @@ def global_localization(pose_estimation):
     # TODO 这里注意线程安全
     scan_tobe_mapped = copy.copy(cur_scan)
 
-    global_map_in_FOV = crop_global_map_in_FOV(global_map, pose_estimation, cur_odom)
+    # global_map_in_FOV = crop_global_map_in_FOV(global_map, pose_estimation, cur_odom)
 
-    transformation, _ = registration_at_scale(scan_tobe_mapped, global_map_in_FOV, initial=pose_estimation, scale=5)
+    transformation, _ = registration_at_scale(scan_tobe_mapped, global_map, initial=pose_estimation, scale=5)
 
-    transformation, fitness = registration_at_scale(scan_tobe_mapped, global_map_in_FOV, initial=transformation, scale=1)
+    transformation, fitness = registration_at_scale(scan_tobe_mapped, global_map, initial=transformation, scale=1)
 
     if fitness > LOCALIZATION_TH:
     # if True:
